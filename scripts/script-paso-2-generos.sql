@@ -16,6 +16,11 @@ VALUES
 	(14,'Short'),
 	(15,'Thriller');
 
+-- Se crea la llave foranea que hace referencia a la entidad genero
+ALTER TABLE pelicula
+ADD CONSTRAINT fk_pelicula_genero
+FOREIGN KEY (genero_id) REFERENCES genero(id);
+
 UPDATE pelicula SET pelicula.genero_id =6 WHERE pelicula.id =1;
 UPDATE pelicula SET pelicula.genero_id =5 WHERE pelicula.id =2;
 UPDATE pelicula SET pelicula.genero_id =6 WHERE pelicula.id =3;

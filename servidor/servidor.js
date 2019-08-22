@@ -14,8 +14,10 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
-//cuando se llama a la ruta /canciones, se ejecuta la acción buscarCanciones.
+//Obtiene todas las peliculas sin filtro alguno.
 app.get('/peliculas', recomendadorController.getMovies);
+// Obtiene todos los generos existentes para listarlos.
+app.get('/generos', recomendadorController.getGenders);
 
 //seteamos el puerto en el cual va a escuchar los pedidos la aplicación
 var puerto = '8080';
