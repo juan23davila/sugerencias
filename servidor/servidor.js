@@ -18,6 +18,8 @@ app.use(bodyParser.json());
 app.get('/peliculas', recomendadorController.getMovies);
 // Obtiene todos los generos existentes para listarlos.
 app.get('/generos', recomendadorController.getGenders);
+//Obtiene todas las peliculas dado un Id.
+app.get('/peliculas/:id', recomendadorController.getMoviesById);
 
 //seteamos el puerto en el cual va a escuchar los pedidos la aplicación
 var puerto = '8080';
