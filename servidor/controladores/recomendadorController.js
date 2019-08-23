@@ -1,5 +1,8 @@
 var con = require('../lib/conexionbd');
 
+/**
+ * Obtiene todas las películas
+ */
 function getMovies(req, res) {
     // Se obtiene los query paramars
     var pagina   = req.query.pagina;
@@ -66,9 +69,8 @@ function getMovies(req, res) {
             }
 
             totalRegs = resultado2[0].cantidad;
-            console.log("totalRegs 1: "+totalRegs);
 
-            //si no hubo error, se crea el objeto respuesta con las canciones encontradas
+            //si no hubo error, se crea el objeto respuesta con las peliculas y la cantidad de las mismas encontradas
             var response = {
                 'peliculas': resultado,
                 'total': totalRegs
@@ -79,6 +81,9 @@ function getMovies(req, res) {
     });
 }
 
+/**
+ * Obtiene los géneros que se encuentran en la base de datos
+ */
 function getGenders(req, res) {
     // Se crea consulta para obtener todas las películas
     var sql = "select * from genero";
@@ -90,7 +95,7 @@ function getGenders(req, res) {
             console.log("Hubo un error en la consulta de todos los generos", error.message);
             return res.status(404).send("Hubo un error en la consulta");
         }
-        //si no hubo error, se crea el objeto respuesta con las canciones encontradas
+        //si no hubo error, se crea el objeto respuesta con los generos encontrados
         var response = {
             'generos': resultado
         };
@@ -99,7 +104,9 @@ function getGenders(req, res) {
     });
 }
 
-
+/**
+ * Obtiene la información de una película en específico
+ */
 function getMoviesById(req, res) {
     //se obtiene el path param id
     var id = req.params.id;
@@ -116,7 +123,7 @@ function getMoviesById(req, res) {
     con.query(sql, function(error, resultado, fields) {
         if (error) {
             console.log("Hubo un error en la consulta", error.message);
-            return res.status(404).send("Hubo un error en la consulta");
+            return res.status(404).send("Hubo un error en la consulteeeeeeeeeeeeeeeeee");
         }
         //si no se encontró ningún resultado, se envía un mensaje con el error
         if (resultado.length == 0) {
@@ -138,7 +145,6 @@ function getMoviesById(req, res) {
                     return res.status(404).send("No se encontro información de los actores");
                 }
                 var response = {
-                    //se crea el objeto respuesta con la canción encontrada
                     'pelicula': resultado[0],
                     'actores': resultadoActores
                 };
@@ -148,11 +154,64 @@ function getMoviesById(req, res) {
         }
 
     });
-}
+};
+
+/**
+ * Funcion que obtiene las recomendaciones para los usuarios
+ */
+function getRecommendations(req, res) {
+    //Se obtienen parámetros enviados por el cliente
+    var genero = req.query.genero;
+    var anio_inicio = req.query.anio_inicio;
+    var anio_fin = req.query.anio_inicio;
+    var puntuacion = req.query.puntuacion;
+
+
+    // Se crea la consulta que obtiene la pelicula dado un id
+    var sql = "SELECT * FROM pelicula, genero\n"+
+              "WHERE genero.id = pelicula.genero_id";
+
+    // Se valida que parámetros se han recibido
+    if(genero){
+        sql += "\n";
+        sql += "AND genero.nombre = '"+genero+"'";
+    }
+    if(anio_inicio && anio_fin){
+        sql += "\n";
+        sql += "AND anio BETWEEN "+anio_inicio+" AND "+anio_fin;
+    }
+    if(puntuacion){
+        sql += "\n";
+        sql += "AND puntuacion > "+puntuacion;
+    }
+
+    // Se ejecuta la consulta
+    con.query(sql, function(error, resultado, fields) {
+        if (error) {
+            console.log("Hubo un error en la consulta", error.message);
+            return res.status(404).send("Hubo un error en la consultaaaaaaaaaaaaaa");
+        }
+        //si no se encontró ningún resultado, se envía un mensaje con el error
+        if (resultado.length == 0) {
+            console.log("No se encontro ninguna película");
+            return res.status(404).send("No se encontró recomendación con las opciones seleccionadas");
+        } else {
+            var response = {
+                'peliculas': resultado
+            };
+        
+            //se envía la respuesta
+            res.send(JSON.stringify(response));
+        }
+    });
+};
+
+
 
 //se exportan las funciones creadas
 module.exports = {
     getMovies: getMovies,
     getGenders: getGenders,
-    getMoviesById: getMoviesById
+    getMoviesById: getMoviesById,
+    getRecommendations: getRecommendations
 };

@@ -18,6 +18,8 @@ app.use(bodyParser.json());
 app.get('/peliculas', recomendadorController.getMovies);
 // Obtiene todos los generos existentes para listarlos.
 app.get('/generos', recomendadorController.getGenders);
+//Obtiene las recomendaciones para el usuario.
+app.get('/peliculas/recomendacion', recomendadorController.getRecommendations);
 //Obtiene todas las peliculas dado un Id.
 app.get('/peliculas/:id', recomendadorController.getMoviesById);
 
